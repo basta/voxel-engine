@@ -30,7 +30,10 @@ async function startWebGL() {
   gl.clear(gl.COLOR_BUFFER_BIT);
 
   let vertexShader = await Shader.fromUrl(gl, "/src/shaders/vertex-start.vert", gl.VERTEX_SHADER)
-  let fragShader = await Shader.fromUrl(gl, "/src/shaders/frag-raymarch.frag", gl.FRAGMENT_SHADER)
+  let fragShader = await Shader.fromUrl(
+      gl, "/src/shaders/frag-raymarch.frag", gl.FRAGMENT_SHADER,
+      ["/src/shaders/distances.glsl"]
+  )
 
   let shaderProgram = new Program(gl, [vertexShader, fragShader])
 
