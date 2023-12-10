@@ -17,24 +17,29 @@ export class Shader {
     }
 
     static fromUrl = async (gl: WebGL2RenderingContext, url: string, type: GLenum, dependencyURLs: string[] = []): Promise<Shader> => {
-        const body = await fetch(url);
-        let source = await body.text();
+        try {
+            const body = await fetch(url);
+            let source = await body.text();
 
-        let dependenciesSource = ``
-        if (dependencyURLs) {
-            let promises = dependencyURLs.map(url => fetch(url))
-            let sources = await Promise.all(await Promise.all(promises)
-                .then((bodies) => bodies.map(body => body.text())))
-            dependenciesSource += sources.join("\n")
+            let dependenciesSource = ``
+            if (dependencyURLs) {
+                let promises = dependencyURLs.map(url => fetch(url))
+                let sources = await Promise.all(await Promise.all(promises)
+                    .then((bodies) => bodies.map(body => body.text())))
+                dependenciesSource += sources.join("\n")
+            }
+
+            dependenciesSource = dependenciesSource.replace(this.VERSION_TAG, "")
+            source = source.replace(this.VERSION_TAG, "")
+
+            source = this.VERSION_TAG + "\n" + dependenciesSource + source
+
+
+            return new Shader(gl, source, type);
+        } catch (e) {
+            console.error(`Failed to load shader from ${url}, reason: ${e}`);
+            throw e;
         }
-
-        dependenciesSource = dependenciesSource.replace(this.VERSION_TAG, "")
-        source = source.replace(this.VERSION_TAG, "")
-
-        source = this.VERSION_TAG + "\n" + dependenciesSource + source
-
-
-        return new Shader(gl, source, type);
     }
 
 }
