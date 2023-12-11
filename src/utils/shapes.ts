@@ -15,7 +15,7 @@ class Cube extends Shape {
 }
 
 export class Sphere extends Shape {
-    SHAPE_TYPE = 1
+    SHAPE_TYPE = 10
     center: [number, number, number]
     radius: number
     constructor(center: [number, number, number], radius: number) {
@@ -33,15 +33,17 @@ export class Sphere extends Shape {
             this.center[0], this.center[1], this.center[2], 0,
             0, 0, 0, 0,
             this.radius, this.radius, this.radius, 0,
+            0
         ], 0)
 
         let u32view = new Uint32Array(buffer);
-        console.log("U8 view is:", u32view)
-        console.log("f32 view is:", floatView)
 
         u32view.set([this.SHAPE_TYPE], 3*4)
 
-        return floatView;
+        console.log("U8 view is:", u32view)
+        console.log("f32 view is:", floatView)
+
+        return buffer;
     }
 }
 

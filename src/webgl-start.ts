@@ -43,7 +43,7 @@ async function startWebGL() {
   const buffers = initBuffers(gl);
   let uboBuffer = createUBOBuffer(gl, shaderProgram);
 
-  let sphere = new Sphere([1, 2, 3], 4)
+  let sphere = new Sphere([0.5, 0.5, 1], 0.1)
   let shapesBuffer = sphere.asShapeStructData()
 
   let movement: number[] = [0, 0, 0]
@@ -84,6 +84,11 @@ async function startWebGL() {
         }
   })
 
+
+  let rotLocation = gl.getUniformLocation(
+    shaderProgram.program, 'rot')!;
+  let posLocation = gl.getUniformLocation(
+    shaderProgram.program, 'pos')!;
   // Draw the scene
   const render = () => {
     movement = [0,0,0]
@@ -93,12 +98,10 @@ async function startWebGL() {
     gl.clear(gl.COLOR_BUFFER_BIT)
     drawScene(gl, shaderProgram, buffers)
 
-    let posLocation = gl.getUniformLocation(
-        shaderProgram.program, 'pos')!;
+
     let pos = gl.getUniform(shaderProgram.program, posLocation);
 
-    let rotLocation = gl.getUniformLocation(
-        shaderProgram.program, 'rot')!;
+
     let rot = gl.getUniform(shaderProgram.program, rotLocation);
 
     let newPos = pos.map((value, index) => value + movement[index]);

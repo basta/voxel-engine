@@ -1,7 +1,8 @@
 precision mediump float;
 #define SHAPE_SPHERE 1u
 #define SHAPE_CUBE 2u
-#define SHAPE_ARRAY_SIZE 1
+#define SHAPE_ARRAY_SIZE 2
+#define SHAPE_VAR u_shapes
 
 uniform float time;
 
@@ -16,7 +17,7 @@ struct Shape {
 
 layout(std140) uniform ShapesBlock
 {
-    Shape[SHAPE_ARRAY_SIZE] u_shapes;
+    Shape u_shapes[SHAPE_ARRAY_SIZE];
 };
 
 //const Shape shapes[SHAPE_ARRAY_SIZE] = Shape[SHAPE_ARRAY_SIZE](
@@ -128,13 +129,13 @@ vec3 shapeNormal(vec3 p, Shape shape) {
 float dist(vec3 p, Shape[SHAPE_ARRAY_SIZE] shape) {
     float minimum = 1000000.;
     for (int i = 0; i < SHAPE_ARRAY_SIZE; i++) {
-        minimum = min(shapeDist(p, shapes[i]), minimum);
+        minimum = min(shapeDist(p, SHAPE_VAR[i]), minimum);
     }
     return minimum;
 }
 
 float dist(vec3 p) {
-    return dist(p, shapes);
+    return dist(p, SHAPE_VAR);
 }
 
 
@@ -142,7 +143,7 @@ vec3 normal(vec3 p, Shape[SHAPE_ARRAY_SIZE] shape) {
     float minimum = 1000000.;
     int mini = 0;
     for (int i = 0; i < SHAPE_ARRAY_SIZE; i++) {
-        float d = shapeDist(p, shapes[i]);
+        float d = shapeDist(p, SHAPE_VAR[i]);
         if (d < minimum) {
             minimum = d;
             mini = i;
@@ -152,6 +153,6 @@ vec3 normal(vec3 p, Shape[SHAPE_ARRAY_SIZE] shape) {
 }
 
 vec3 normal(vec3 p) {
-    return normal(p, shapes);
+    return normal(p, SHAPE_VAR);
 }
 
