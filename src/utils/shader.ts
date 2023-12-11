@@ -2,6 +2,7 @@ export class Shader {
     static VERSION_TAG = "#version 300 es"
 
     shader: WebGLShader;
+
     constructor(gl: WebGL2RenderingContext, source: string, type: GLenum) {
         this.shader = gl.createShader(type)!
         gl.shaderSource(this.shader, source)
@@ -10,13 +11,18 @@ export class Shader {
         const message = gl.getShaderInfoLog(this.shader)!;
 
         if (message.length > 0) {
-          /* message may be an error or a warning */
-          throw message;
+            /* message may be an error or a warning */
+            throw message;
         }
 
     }
 
-    static fromUrl = async (gl: WebGL2RenderingContext, url: string, type: GLenum, dependencyURLs: string[] = []): Promise<Shader> => {
+    static fromUrl = async (
+        gl: WebGL2RenderingContext,
+        url: string,
+        type: GLenum,
+        dependencyURLs: string[] = [],
+        defines: Record<string, string> = {}): Promise<Shader> => {
         try {
             const body = await fetch(url);
             let source = await body.text();
@@ -32,8 +38,17 @@ export class Shader {
             dependenciesSource = dependenciesSource.replace(this.VERSION_TAG, "")
             source = source.replace(this.VERSION_TAG, "")
 
-            source = this.VERSION_TAG + "\n" + dependenciesSource + source
+            source = dependenciesSource + source
 
+            let definesSource = ""
+            for (const key in defines) {
+                definesSource += `#define ${key} ${defines[key]}\n`
+                let defineRegex = new RegExp(`#define *${key} *.*`, "gm")
+                console.log("Replacing", defineRegex)
+                source = source.replace(defineRegex, "")
+            }
+
+            source = this.VERSION_TAG + "\n" + definesSource + source
 
             return new Shader(gl, source, type);
         } catch (e) {

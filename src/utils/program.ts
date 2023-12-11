@@ -20,24 +20,9 @@ export class Program {
     }
 }
 
-export class UniformBufferObject {
-    createUBO = () => {
-
-    }
-
-    bindUBO = () => {}
-
-    setBufferData = () => {}
-
-    bindBufferBaseToBindingPoint = () => {}
-
-    deleteUBO = () => {}
-}
 
 export const createUBOBuffer = (gl: WebGL2RenderingContext, program: Program) => {
     // https://gist.github.com/jialiang/2880d4cc3364df117320e8cb324c2880
-    const N_SHAPES = 10;
-
     const blockIndex = gl.getUniformBlockIndex(
         program.program,
         "ShapesBlock"

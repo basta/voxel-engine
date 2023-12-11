@@ -77,5 +77,5 @@ vec3 ray_march(vec2 uv){
 
 void main() {
     //TODO NEFUNGUJE TYP
-        fragColor = vec4(ray_march(UV) , 1.) + vec4(vec3(u_shapes[0].pos), 1.);
+        fragColor = vec4(ray_march(UV), 1.);
 }
